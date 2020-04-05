@@ -21,7 +21,7 @@ const firebaseConfig = {
 	projectId: 'mgc-cantapp',
 	storageBucket: 'mgc-cantapp.appspot.com',
 	messagingSenderId: '44505885939',
-	appId: '1:44505885939:web:86ad78b7062564f47ddb86'
+	appId: '1:44505885939:web:86ad78b7062564f47ddb86',
 };
 
 // Initialize Firebase
@@ -55,7 +55,7 @@ fs.readFile(file, (err, data) => {
 			// rimuovo campi vuoti prima e dopo string
 			song.lyric = song.lyric.trim();
 			songs.push(song);
-			song = { title: '', lyric: '' };
+			song = { title: '', lyric: '', keywords: [] };
 			// ottengo il titolo
 			// rimuovo numero e "-"
 			const title = line
@@ -68,7 +68,9 @@ fs.readFile(file, (err, data) => {
 				.replace('.', '');
 
 			// const titleDecoded = title;
-			song.title = camelCase(title.trim().toLowerCase());
+			const titleLower = title.trim().toLowerCase();
+			song.title = camelCase(titleLower);
+			song.keywords = createKeywords(titleLower);
 			continue;
 		}
 
@@ -88,7 +90,15 @@ fs.readFile(file, (err, data) => {
 	// );
 
 	let k = 0;
-	songs.forEach(async song => {
+
+	// const songstring = JSON.stringify(songs);
+	// fs.writeFile('songs.json', songstring, (err) => {
+	// 	if (err) console.log('Error writing file', err);
+	// 	else console.log('Successfully wrote file');
+	// });
+
+	// return;
+	songs.forEach(async (song) => {
 		await db.collection('songs').add(song);
 		k++;
 		console.log(`song uploaded ${k}/${songs.length}`);
@@ -99,10 +109,10 @@ fs.readFile(file, (err, data) => {
 	});
 });
 
-const camelCase = value =>
+const camelCase = (value) =>
 	value.substring(0, 1).toUpperCase() + value.substring(1);
 
-const getline = html => {
+const getline = (html) => {
 	const spans = html.getElementsByTagName('span');
 	let text = '';
 	// isBold = false;
@@ -121,7 +131,7 @@ const getline = html => {
  *
  * @param {String} str htmlSet entities
  **/
-const decode = str => str.replace(/&+[A-z]+;/g, '');
+const decode = (str) => str.replace(/&+[A-z]+;/g, '');
 // str.replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
 
 // fs.readdir('upload', (err, files) =>
@@ -168,3 +178,13 @@ const decode = str => str.replace(/&+[A-z]+;/g, '');
 // 		})
 // 	)
 // );
+
+const createKeywords = (name) => {
+	const arrName = [];
+	let curName = '';
+	name.split('').forEach((letter) => {
+		curName += letter;
+		arrName.push(curName);
+	});
+	return arrName;
+};
