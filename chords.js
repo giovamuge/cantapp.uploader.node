@@ -37,7 +37,7 @@ const songs = [];
 // );
 // app.listen(3000, () => console.log('server listening port 3000'));
 
-const file = path.join(__dirname, './upload/canti.html');
+const file = path.join(__dirname, './upload/a.html');
 fs.readFile(file, (err, data) => {
 	if (err) console.error(err);
 	const dom = new JSDOM(data);
@@ -93,6 +93,8 @@ fs.readFile(file, (err, data) => {
 
 	let k = 0;
 
+	console.log(songs);
+
 	// const songstring = JSON.stringify(songs);
 	// fs.writeFile('songs.json', songstring, (err) => {
 	// 	if (err) console.log('Error writing file', err);
@@ -100,15 +102,15 @@ fs.readFile(file, (err, data) => {
 	// });
 
 	// return;
-	songs.forEach(async (song) => {
-		await db.collection('songs').add(song);
-		k++;
-		console.log(`song uploaded ${k}/${songs.length}`);
+	// songs.forEach(async (song) => {
+	// 	await db.collection('songs').add(song);
+	// 	k++;
+	// 	console.log(`song uploaded ${k}/${songs.length}`);
 
-		if (k == songs.length) {
-			console.log('song uploaded with success');
-		}
-	});
+	// 	if (k == songs.length) {
+	// 		console.log('song uploaded with success');
+	// 	}
+	// });
 });
 
 const camelCase = (value) =>
